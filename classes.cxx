@@ -5,12 +5,18 @@ using namespace std;
 // the 'head' is throttle- we aren't using a constructor in this, but apparently that comes later
 class throttle {
     public:
-        void shut_off(); // method to shut off engine
+        // Constructor functions- one for empty parameters, one for parameters
+        throttle(); // default constructor, there can only be one of these, but multiple of the one below
+        throttle(int size); // you can have as many constructor functions as you want for any different variation of arguments
+        
+        void shut_off(); // method to shut off engine, void means there is no return value
         void shift(int amount); // shift the gear
         double flow() const; // const goes after this- this means it is a constant member function- one that cannot alter the object, 
         bool is_on() const; // but can only observe
+        bool is_above_half() const {return (flow() > 0.5);}; // inline function
     private:
         int position; // stores current position of the throttle
+        int top_position; // 
 };
 
 // can also create instances
@@ -51,7 +57,7 @@ void throttle::shut_off() {
     position = 0;
 }
 
-void throttle::shift(int amount) {
+void throttle::shift(int amount) { // void means it does not return a value
     // precondition: shut off has been called at least once to initialize the throttle
     // postcondition: position movement has to be 0 <= x <= 6
 
@@ -62,8 +68,30 @@ void throttle::shift(int amount) {
     } else if (position > 6) {
         position = 6;
     }
+};
+
+double throttle::flow() const { // double == float in C
+    return position / 6.0;
+};
+
+bool throttle::is_on() const { 
+    return (flow() > 0);
+};
+
+bool throttle::is_above_half() const { // const means that you cannot go above halfway
+    return (flow()>0.5);
+};
+
+// using the constructors
+throttle::throttle() 
+{
+    top_position = 1;
+    position = 0;
 }
 
-double throttle::flow() const {
-    return position / 6.0;
+throttle::throttle(int size)
+{
+    assert(0 < size);
+    top_position = size;
+    position = 0;
 }
